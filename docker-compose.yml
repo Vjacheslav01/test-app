@@ -1,6 +1,9 @@
 services:
   # PHP 7.4 + Composer
   web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: php:7.4-fpm
     container_name: php_web_test_app
     restart: always
