@@ -1,0 +1,83 @@
+services:
+  # PHP 7.4 + Composer
+  web:
+    image: php:7.4-fpm
+    container_name: php_web_test_app
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    entrypoint: ["sh", "-c", "su web | composer install --working-dir=/var/www && php-fpm"]
+    networks:
+      - app-network
+
+  # Nginx
+  nginx:
+    image: nginx:latest
+    container_name: nginx_server_test_app
+    restart: always
+    ports:
+      - "81:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+    networks:
+      - app-network
+
+  # Node.js 18.20
+  node:
+    image: node:18.20
+    container_name: node_server_test_app
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    entrypoint: ["sh", "-c", "su web | npm install --prefix /var/www && tail -f /dev/null"]
+    networks:
+      - app-network
+
+  # MySQL
+  db:
+    image: mysql:5.7
+    container_name: mysql_db_test_app
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: web
+      MYSQL_DB: test_app
+      MYSQL_PASSWORD: password
+    networks:
+      - app-network
+
+  # phpMyAdmin
+  pma:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_test_app
+    restart: always
+    ports:
+      - "8181:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # Composer
+  composer:
+    image: composer:latest
+    container_name: composer_test_app
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - ./api:/var/www/api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
