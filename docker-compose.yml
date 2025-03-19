@@ -34,7 +34,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_USER: web
-      MYSQL_DB: test_app
+      MYSQL_DATABASE: test_app
       MYSQL_PASSWORD: password
     networks:
       - app-network
