@@ -1,76 +1,80 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use yii\base\Exception;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
+/**
+ * Модель пользователя.
+ *
+ * @property int $id Уникальный идентификатор пользователя
+ * @property string $username Имя пользователя
+ * @property string $auth_key Ключ авторизации
+ * @property string $password_hash Хэш пароля
+ * @property string|null $password_reset_token Токен сброса пароля
+ * @property string $email Электронная почта
+ * @property int $status Статус пользователя
+ * @property int $created_at Дата создания
+ * @property int $updated_at Дата обновления
+ */
+class User extends ActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
-
     /**
      * {@inheritdoc}
      */
-    public static function findIdentity($id)
+    public static function tableName(): string
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return '{{user}}';
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public function rules(): array
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return [
+            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
+            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
+            [['auth_key'], 'string', 'max' => 32],
+            [['username'], 'unique'],
+            [['email'], 'unique'],
+            [['password_reset_token'], 'unique'],
+        ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getId()
+    public static function findIdentity($id): ?self
+    {
+        return static::findOne($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function findByEmail($email): ?self
+    {
+        return static::findOne(['email' => $email]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function findIdentityByAccessToken($token, $type = null): ?self
+    {
+        return static::findOne(['access_token' => $token]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId(): int
     {
         return $this->id;
     }
@@ -78,27 +82,45 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getAuthKey()
+    public function getAuthKey(): string
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): bool
     {
-        return $this->authKey === $authKey;
+        return $this->auth_key === $authKey;
     }
 
     /**
-     * Validates password
+     * Проверяет пароль.
      *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
+     * @param string $password Пароль для проверки
+     * @return bool
      */
-    public function validatePassword($password)
+    public function validatePassword(string $password): bool
     {
-        return $this->password === $password;
+        return \Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     * Устанавливает пароль.
+     * @param string $password Пароль для установки
+     * @throws Exception
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Генерирует ключ авторизации.
+     */
+    public function generateAuthKey(): void
+    {
+        $this->auth_key = \Yii::$app->security->generateRandomString();
     }
 }

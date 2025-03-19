@@ -29,23 +29,24 @@ class UserController extends BaseController
      */
     public function actionAuth(): array
     {
-        list($defaultData) = [
+        list($response, $model) = [
             [
                 'success' => false,
                 'error' => true,
                 'message' => 'Неверный e-mail или пароль',
                 'data' => [],
-            ]
+            ],
+            new LoginForm(
+                json_decode(Yii::$app->request->getRawBody(), true)
+            )
         ];
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            $defaultData['message'] = 'Вы успешно авторизовались';
-            $defaultData['success'] = true;
-            $defaultData['error']   = false;
-            return $defaultData;
+        if ($model->login()) {
+            $response['message'] = 'Вы успешно авторизовались';
+            $response['success'] = true;
+            $response['error']   = false;
+            return $response;
         }
-        return $defaultData;
+        return $response;
     }
 
     /**

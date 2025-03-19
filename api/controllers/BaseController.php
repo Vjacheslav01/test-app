@@ -14,15 +14,17 @@ class BaseController extends Controller
     {
         $behaviors = parent::behaviors();
 
+        // Получаем параметры CORS из конфигурации
+        $corsParams = \Yii::$app->params['cors'];
+
         // Настройка CORS
-        $behaviors['cors'] = [
+        $behaviors['corsFilter'] = [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://test-app.loc:81'],
-                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'OPTIONS'],
-                'Access-Control-Request-Headers' => ['*'],
-                'Access-Control-Allow-Credentials' => true,
-                'Access-Control-Max-Age' => 86400,
+                'Origin' => $corsParams['allowedOrigins'],
+                'Access-Control-Request-Method' => $corsParams['allowedMethods'],
+                'Access-Control-Request-Headers' => $corsParams['allowedHeaders'],
+                'Access-Control-Allow-Credentials' => $corsParams['allowedCredentials'],
             ],
         ];
         return $behaviors;
