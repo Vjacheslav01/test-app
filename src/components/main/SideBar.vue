@@ -5,27 +5,53 @@
     </div>
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link active" href="#">
-          <i class="fas fa-home"></i> Оставить заявку
-        </a>
+        <RouterLink active-class="active" class="nav-link" to="/">
+          <i class="fas fa-home"></i> Главная
+        </RouterLink>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-home"></i> Список заявок
-        </a>
+        <RouterLink active-class="active" class="nav-link" to="/lead/lead-request">
+          <i class="fas fa-pen"></i> Оставить заявку
+        </RouterLink>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
+      <li v-if="payloadStore.user.logged" class="nav-item">
+        <RouterLink active-class="active" class="nav-link" to="/lead/lead-list">
+          <i class="fas fa-columns"></i> Список заявок
+        </RouterLink>
+      </li>
+      <li v-if="payloadStore.user.logged" class="nav-item">
+        <a href="#" class="nav-link" @click="logout()">
           <i class="fas fa-sign-out-alt"></i> Выйти
         </a>
+      </li>
+      <li v-else class="nav-item">
+        <RouterLink active-class="active" class="nav-link" to="/auth">
+          <i class="fas fa-sign-in"></i> Войти
+        </RouterLink>
       </li>
     </ul>
   </div>
 </template>
 
-<script>
-  export default {
-    name: 'Sidebar'
+<script setup>
+  import { RouterLink, RouterView } from 'vue-router'
+
+  import { useAuthStore }    from '../../stores/AuthStore.js';
+  import { usePayloadStore } from '../../stores/PayloadStore.js';
+
+  const authStore    = useAuthStore();
+  const payloadStore = usePayloadStore();
+
+  const logout = async () => {
+    try {
+      const result = await authStore.logout();
+      if (result.data.success) {
+        localStorage.removeItem('token');
+        window.location.reload();
+      }
+    } catch (error) {
+      // toast.error(error.message);
+    }
   };
 </script>
 

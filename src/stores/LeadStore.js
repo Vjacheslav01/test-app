@@ -12,9 +12,26 @@ export const useLeadStore = defineStore('leads', {
     }
   }),
   actions: {
+    async fetchRequests() {
+      try {
+        const response = await api.post('/lead/list');
+        if (response.data.success) {
+          this.leads = response.data.data;
+        }
+      } catch (error) {
+        throw new Error(error.message || 'Ошибка');
+      }
+    },
     async submitRequest(formData) {
       try {
         const response = await api.post('/lead/submit', formData);
+      } catch (error) {
+        throw new Error(error.message || 'Ошибка');
+      }
+    },
+    async updateRequest(id, data) {
+      try {
+        const response = await api.post('/lead/update', {id: id, data});
       } catch (error) {
         throw new Error(error.message || 'Ошибка');
       }
