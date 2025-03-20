@@ -19,11 +19,13 @@
   import '../assets/auth.scss'
 
   import { ref } from 'vue';
-  import { useAuthStore } from '../stores/Auth.js';
+  import { useAuthStore } from '../stores/AuthStore.js';
   import { useToast } from 'vue-toastification';
+  import { useRouter } from 'vue-router';
 
   const toast = useToast();
   const authStore = useAuthStore();
+  const router = useRouter();
 
   const form = ref({email: '', phone: '', password: ''});
 
@@ -31,6 +33,7 @@
     try {
       await authStore.auth(form.value);
       toast.success('Авторизация прошла успешно!');
+      router.push('/');
     } catch (error) {
       toast.error(error.message);
     }
