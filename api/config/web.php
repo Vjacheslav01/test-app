@@ -20,8 +20,9 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
+            'class' => 'app\components\UserComponent',
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

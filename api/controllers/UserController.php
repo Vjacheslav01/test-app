@@ -44,6 +44,9 @@ class UserController extends BaseController
             $response['message'] = 'Вы успешно авторизовались';
             $response['success'] = true;
             $response['error']   = false;
+            $response['data']    = [
+                'token' => $model->getUser()->getAuthKey()
+            ];
             return $response;
         }
         return $response;
@@ -66,6 +69,33 @@ class UserController extends BaseController
             $defaultData['success'] = true;
             $defaultData['error']   = false;
             $defaultData['message'] = 'Вы вышли из системы';
+            return $defaultData;
+        }
+        return $defaultData;
+    }
+
+    /**
+     * @return array
+     */
+    public function actionPayload(): array
+    {
+        list($defaultData) = [
+            [
+                'success' => false,
+                'error' => true,
+                'message' => 'Вы не авторизованы',
+                'data' => [],
+            ]
+        ];
+        if (!Yii::$app->user->isGuest) {
+            $defaultData['message'] = null;
+            $defaultData['success'] = true;
+            $defaultData['error']   = false;
+            $defaultData['data']    = [
+                'name'  => Yii::$app->user->identity->username,
+                'id'    => Yii::$app->user->identity->id,
+                'email' => Yii::$app->user->identity->email,
+            ];
             return $defaultData;
         }
         return $defaultData;
