@@ -39,6 +39,7 @@ services:
       MYSQL_USER: web
       MYSQL_DATABASE: test_app
       MYSQL_PASSWORD: password
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - app-network
 
