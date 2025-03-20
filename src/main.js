@@ -27,7 +27,7 @@ router.beforeEach(async (to, from, next) => {
     // Проверяем, требует ли маршрут авторизации
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!payloadStore.user.logged) {
-            next('/login');
+            next('/auth');
         } else {
             next();
         }
