@@ -2,12 +2,10 @@
 
 Тестовое задание
 
-## Требования
+## Требования для установки
 
 - Наличие установленного докера (docker/docker-desktop)
 - NodeJS (18.20)/NPM(10.5) (or nvm: nvm use 18)
-- PHP 7.4
-- Composer
 
 ## Установка
 
@@ -15,8 +13,7 @@
 
 - npm install
 - npm run build
-- cd api
-- composer install
+- docker-compose exec -w /var/www/api web php composer.phar install
 - docker-compose up -d
 - docker-compose exec web php api/yii migrate
 - добавить в /etc/hosts строки
