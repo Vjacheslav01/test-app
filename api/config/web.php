@@ -53,7 +53,13 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [],
+            'rules' => [
+                'OPTIONS <controller:\w+>' => '<controller>/options',
+                'OPTIONS requests/<id:\d+>' => 'requests/options',
+                'POST requests'            => 'requests/submit',
+                'GET requests'            => 'requests/list',
+                'PUT requests/<id:\d+>'   => 'requests/update',
+            ],
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
