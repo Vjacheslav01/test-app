@@ -5,7 +5,7 @@
 ## Требования
 
 - Наличие установленного докера (docker/docker-desktop)
-- NodeJS (18.20)/NPM(10.5) (or nvm: nvm user 18)
+- NodeJS (18.20)/NPM(10.5) (or nvm: nvm use 18)
 - PHP 7.4
 - Composer
 
