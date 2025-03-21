@@ -13,8 +13,8 @@
 
 - npm install
 - npm run build
-- docker-compose exec -w /var/www/api web php composer.phar install
 - docker-compose up -d
+- docker-compose exec -w /var/www/api web php composer.phar install
 - docker-compose exec web php api/yii migrate
 - добавить в /etc/hosts строки
     - 127.0.0.1 http://test-app.loc,
