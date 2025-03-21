@@ -1,39 +1,33 @@
-# vite-project
+# TEST-APP
 
-This template should help get you started developing with Vue 3 in Vite.
+Тестовое задание
 
-## Recommended IDE Setup
+## Требования
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Наличие установленного докера (docker/docker-desktop)
+- NodeJS (18.20)/NPM(10.5) (or nvm: nvm user 18)
+- Composer
 
-## Type Support for `.vue` Imports in TS
+## Установка
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+В папке сайта выполните следующие команды:
 
-## Customize configuration
+- npm install
+- composer install
+- docker up -d
+- docker-compose exec web php api/yii migrate
+- добавить в /etc/hosts строку 127.0.0.1 http://api.test-app.loc
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## API
 
-## Project Setup
+- GET http://api.test-app.loc:81/requests      - Список заявок
+- POST http://api.test-app.loc:81/requests     - Создание новой заявки
+- PUT http://api.test-app.loc:81/requests/{id} - Закрытие заявки
 
-```sh
-npm install
-```
+все эндпоинты (кроме создание заявок) требуют авторизации
 
-### Compile and Hot-Reload for Development
+'Authorization: Bearer auth_key',
 
-```sh
-npm run dev
-```
+## Прочее
 
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Имеется графический пользовательский интерфейс по адресу http://api.test-app.loc:81
