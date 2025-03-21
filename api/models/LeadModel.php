@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
@@ -38,7 +39,6 @@ class LeadModel extends ActiveRecord
             'timestamp' => [
                 'createdAtAttribute' => 'created_at',
                 'updatedAtAttribute' => 'updated_at',
-                'value' => (new \DateTime())->format('Y-m-d H:i:s'),
                 'class' => TimestampBehavior::class,
             ]
         ]);
@@ -59,6 +59,19 @@ class LeadModel extends ActiveRecord
             [['created_at', 'updated_at'], 'integer'],
         ];
     }
+
+    /**
+     * @return array|false|int[]|string[]
+     */
+    public function fields()
+    {
+        return ArrayHelper::merge(parent::fields(), [
+            'createdAt' => function ($model) {
+                return Yii::$app->formatter->asDatetime($model->created_at);
+            }
+        ]);
+    }
+
 
     /**
      * {@inheritdoc}

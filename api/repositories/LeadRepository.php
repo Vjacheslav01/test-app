@@ -15,11 +15,23 @@ class LeadRepository
     {
         $query = LeadModel::find();
 
-        if (isset($filters['status'])) {
+        if (
+            isset($filters['status']) &&
+            !empty($filters['status'])
+        ) {
             $query->andWhere(['status' => $filters['status']]);
         }
-        if (isset($filters['created_at'])) {
-            $query->andWhere(['>=', 'created_at', $filters['created_at']]);
+        if (
+             isset($filters['startDate']) &&
+            !empty($filters['startDate'])
+        ) {
+            $query->andWhere(['>=', 'created_at', strtotime($filters['startDate'])]);
+        }
+        if (
+             isset($filters['endDate']) &&
+            !empty($filters['endDate'])
+        ) {
+            $query->andWhere(['<=', 'created_at', strtotime($filters['endDate'])]);
         }
         return new ActiveDataProvider([
             'query' => $query,

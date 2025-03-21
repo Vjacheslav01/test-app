@@ -6,16 +6,16 @@
         <select class="form-select" id="statusFilter" v-model="filters.status">
           <option value="">Все</option>
           <option value="Active">Активные</option>
-          <option value="Resolved">Завершенные</option>
+          <option value="Resolve">Завершенные</option>
         </select>
       </div>
       <div style="padding-right: 25px;" class="mb-3 col-lg-4">
         <label for="startDate" class="form-label">Дата начала</label>
-        <input type="date" class="form-control" id="startDate" v-model="filters.startDate">
+        <input type="datetime-local" class="form-control" id="startDate" v-model="filters.startDate">
       </div>
       <div style="padding-right: 25px;"class="mb-3 col-lg-3">
         <label for="endDate" class="form-label">Дата окончания</label>
-        <input type="date" class="form-control" id="endDate" v-model="filters.endDate">
+        <input type="datetime-local" class="form-control" id="endDate" v-model="filters.endDate">
       </div>
       <div class="mb-3 col-lg-1">
         <button class="btn btn-primary" @click="fetchRequests">
@@ -32,6 +32,7 @@
         <th>Сообщение</th>
         <th>Статус</th>
         <th>Комментарий</th>
+        <th>Дата создания</th>
         <th>Действия</th>
       </tr>
       </thead>
@@ -43,6 +44,7 @@
         <td>{{ lead.message }}</td>
         <td>{{ lead.status }}</td>
         <td>{{ lead.comment }}</td>
+        <td>{{ lead.createdAt }}</td>
         <td>
           <button class="btn btn-success" @click="resolveRequest(lead.id)" v-if="lead.status === 'Active'">Завершить</button>
         </td>
@@ -63,13 +65,9 @@
     startDate: '',
     endDate: ''
   });
-
   const fetchRequests = async () => {
-    lead.filters = filters.value;
-    await lead.fetchRequests();
-
+    await lead.fetchRequests(filters.value);
   };
-
   const resolveRequest = async (id) => {
     const comment = prompt('Введите комментарий:');
     if (comment) {
@@ -77,6 +75,5 @@
       await lead.fetchRequests();
     }
   };
-
   fetchRequests();
 </script>

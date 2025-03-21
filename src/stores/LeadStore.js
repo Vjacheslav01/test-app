@@ -12,9 +12,9 @@ export const useLeadStore = defineStore('leads', {
     }
   }),
   actions: {
-    async fetchRequests() {
+    async fetchRequests(filter) {
       try {
-        const response = await api.post('/lead/list');
+        const response = await api.get('/lead/list', {params: filter});
         if (response.data.success) {
           this.leads = response.data.data;
         }

@@ -19,8 +19,8 @@ class m250320_113155_create_leads_table extends Migration
             'status' => $this->string(),
             'message' => $this->text(),
             'comment' => $this->text(),
-            'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
-            'updated_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP')
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer()
         ]);
     }
 
