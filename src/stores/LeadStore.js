@@ -14,7 +14,7 @@ export const useLeadStore = defineStore('leads', {
   actions: {
     async fetchRequests(filter) {
       try {
-        const response = await api.get('/lead/list', {params: filter});
+        const response = await api.get('/requests', {params: filter});
         if (response.data.success) {
           this.leads = response.data.data;
         }
@@ -24,14 +24,14 @@ export const useLeadStore = defineStore('leads', {
     },
     async submitRequest(formData) {
       try {
-        const response = await api.post('/lead/submit', formData);
+        const response = await api.post('/requests', formData);
       } catch (error) {
         throw new Error(error.message || 'Ошибка');
       }
     },
     async updateRequest(id, data) {
       try {
-        const response = await api.post('/lead/update', {id: id, data});
+        const response = await api.put(`/requests/${id}`, data);
       } catch (error) {
         throw new Error(error.message || 'Ошибка');
       }
